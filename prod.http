@@ -1,0 +1,74 @@
+### Health Check
+GET https://app-kasir-production-8bdf.up.railway.app/
+Accept: application/json
+
+### Ambil semua kategori
+GET https://app-kasir-production-8bdf.up.railway.app/categories
+Accept: application/json
+
+### Tambah kategori baru
+POST https://app-kasir-production-8bdf.up.railway.app/categories
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Minuman",
+  "description": "Kategori untuk semua jenis minuman"
+}
+
+### Ambil detail kategori berdasarkan ID
+GET https://app-kasir-production-8bdf.up.railway.app/categories/1
+Accept: application/json
+
+### Update kategori berdasarkan ID
+PUT https://app-kasir-production-8bdf.up.railway.app/categories/2
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Minuman Segar",
+  "description": "Kategori untuk minuman dingin dan segar"
+}
+
+### Hapus kategori berdasarkan ID
+DELETE https://app-kasir-production-8bdf.up.railway.app/categories/3
+Accept: application/json
+
+
+///////////PRODUK///////////
+
+### Ambil semua produk
+GET https://app-kasir-production-8bdf.up.railway.app/products
+Accept: application/json
+
+### Tambah produk baru
+POST https://app-kasir-production-8bdf.up.railway.app/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Nasi Goreng",
+  "price": 20000,
+  "stock": 50,
+  "category_id": 1
+}
+
+### Ambil detail produk berdasarkan ID
+GET https://app-kasir-production-8bdf.up.railway.app/products/1
+Accept: application/json
+
+### Update produk berdasarkan ID
+PUT https://app-kasir-production-8bdf.up.railway.app/products/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Nasi Goreng Spesial",
+  "price": 25000,
+  "stock": 40,
+  "category_id": 1
+}
+
+### Hapus produk berdasarkan ID
+DELETE https://app-kasir-production-8bdf.up.railway.app/products/2
+Accept: application/json
