@@ -16,27 +16,21 @@ type Config struct {
 func LoadConfig() (Config, error) {
 	var config Config
 
-	// baca environment variable dari sistem
+	// baca environment variable
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	// cek apakah file .env ada
+	// cek file .env hanya di lokal
 	if _, err := os.Stat(".env"); err == nil {
 		viper.SetConfigFile(".env")
-		// baca isi file .env
 		if err := viper.ReadInConfig(); err == nil {
 			log.Println("Using .env file")
-		} else {
-			log.Println("Failed to read .env file, fallback to system env")
 		}
-	} else {
-		log.Println("No .env file found, fallback to system env")
 	}
 
-	// mapping ke struct Config
-	if err := viper.Unmarshal(&config); err != nil {
-		return config, err
-	}
+	// isi struct Config dari env
+	config.Port = viper.GetString("PORT")
+	config.DBConn = viper.GetString("DB_CONN")
 
 	return config, nil
 }
