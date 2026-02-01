@@ -33,3 +33,42 @@ Accept: application/json
 ### Hapus kategori berdasarkan ID
 DELETE http://localhost:8080/categories/3
 Accept: application/json
+
+
+///////////PRODUK///////////
+
+### Ambil semua produk
+GET http://localhost:8080/products
+Accept: application/json
+
+### Tambah produk baru
+POST http://localhost:8080/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Nasi Goreng",
+  "price": 20000,
+  "stock": 50,
+  "category_id": 1
+}
+
+### Ambil detail produk berdasarkan ID
+GET http://localhost:8080/products/1
+Accept: application/json
+
+### Update produk berdasarkan ID
+PUT http://localhost:8080/products/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Nasi Goreng Spesial",
+  "price": 25000,
+  "stock": 40,
+  "category_id": 1
+}
+
+### Hapus produk berdasarkan ID
+DELETE http://localhost:8080/products/2
+Accept: application/json

@@ -12,11 +12,14 @@ import (
 )
 
 func main() {
-	// load config pakai viper
+	// load config
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		log.Fatal("Failed to load config:", err)
 	}
+
+	// debug log untuk memastikan env terbaca
+	log.Printf("Loaded config: PORT=%s, DB_CONN=%s", cfg.Port, cfg.DBConn)
 
 	// koneksi database
 	db, err := config.InitDB(cfg.DBConn)
@@ -30,6 +33,10 @@ func main() {
 	categoryService := services.NewCategoryService(categoryRepo)
 	categoryHandler := handlers.NewCategoryHandler(categoryService)
 
+	productRepo := repositories.NewProductRepository(db)
+	productService := services.NewProductService(productRepo)
+	productHandler := handlers.NewProductHandler(productService)
+
 	// routing
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -38,6 +45,8 @@ func main() {
 	})
 	http.HandleFunc("/categories", categoryHandler.HandleCategories)
 	http.HandleFunc("/categories/", categoryHandler.HandleCategoryByID)
+	http.HandleFunc("/products", productHandler.HandleProducts)
+	http.HandleFunc("/products/", productHandler.HandleProductByID)
 
 	addr := "localhost:" + cfg.Port
 	fmt.Println("Server running at", addr)
