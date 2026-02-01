@@ -43,12 +43,18 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, `{"status":"Server running on port %s"}`, cfg.Port)
 	})
+
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("OK"))
+	})
+
 	http.HandleFunc("/categories", categoryHandler.HandleCategories)
 	http.HandleFunc("/categories/", categoryHandler.HandleCategoryByID)
 	http.HandleFunc("/products", productHandler.HandleProducts)
 	http.HandleFunc("/products/", productHandler.HandleProductByID)
 
-	addr := "localhost:" + cfg.Port
-	fmt.Println("Server running at", addr)
+	addr := "0.0.0.0:" + cfg.Port
+	log.Println("Server running at", addr)
+
 	log.Fatal(http.ListenAndServe(addr, nil))
 }
