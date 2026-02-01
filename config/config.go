@@ -29,8 +29,8 @@ func LoadConfig() (Config, error) {
 	}
 
 	// isi struct Config dari env
-	config.Port = viper.GetString("PORT")
-	config.DBConn = viper.GetString("DB_CONN")
+	config.DBConn = strings.TrimSpace(viper.GetString("DB_CONN"))
+	config.Port = strings.TrimSpace(viper.GetString("PORT"))
 
 	return config, nil
 }
