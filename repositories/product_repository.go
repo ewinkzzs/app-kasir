@@ -14,15 +14,16 @@ func NewProductRepository(db *sql.DB) *ProductRepository {
 	return &ProductRepository{db: db}
 }
 
-func (repo *ProductRepository) GetAll(nameFilter string) ([]models.Product, error) {
+func (repo *ProductRepository) GetAll(nameFilter string) ([]models.ProductResponse, error) {
 	query := `
-		SELECT p.id, p.name, p.price, p.stock, c.id, c.name
+		SELECT 
+			p.id, p.name, p.price, p.stock,
+			c.id, c.name, c.description
 		FROM products p
 		JOIN categories c ON c.id = p.category_id
 	`
 
 	args := []interface{}{}
-
 	if nameFilter != "" {
 		query += " WHERE p.name ILIKE $1"
 		args = append(args, "%"+nameFilter+"%")
@@ -34,10 +35,10 @@ func (repo *ProductRepository) GetAll(nameFilter string) ([]models.Product, erro
 	}
 	defer rows.Close()
 
-	products := []models.Product{}
+	products := []models.ProductResponse{}
 
 	for rows.Next() {
-		var p models.Product
+		var p models.ProductResponse
 		p.Category = models.Category{}
 
 		err := rows.Scan(
@@ -47,6 +48,7 @@ func (repo *ProductRepository) GetAll(nameFilter string) ([]models.Product, erro
 			&p.Stock,
 			&p.Category.ID,
 			&p.Category.Name,
+			&p.Category.Description,
 		)
 		if err != nil {
 			return nil, err
@@ -58,15 +60,30 @@ func (repo *ProductRepository) GetAll(nameFilter string) ([]models.Product, erro
 	return products, nil
 }
 
-func (repo *ProductRepository) GetByID(id int) (*models.Product, error) {
+func (repo *ProductRepository) GetByID(id int) (*models.ProductResponse, error) {
 	query := `
-        SELECT p.id, p.name, p.price, p.stock, p.category_id, c.name as category
-        FROM products p
-        JOIN categories c ON p.category_id = c.id
-        WHERE p.id = $1
-    `
-	var p models.Product
-	err := repo.db.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.Price, &p.Stock, &p.Category.ID, &p.Category.Name)
+		SELECT 
+			p.id, p.name, p.price, p.stock,
+			c.id, c.name, c.description
+		FROM products p
+		JOIN categories c ON c.id = p.category_id
+		WHERE p.id = $1
+	`
+
+	var p models.ProductResponse
+	p.Category = models.Category{}
+
+	err := repo.db.QueryRow(query, id).
+		Scan(
+			&p.ID,
+			&p.Name,
+			&p.Price,
+			&p.Stock,
+			&p.Category.ID,
+			&p.Category.Name,
+			&p.Category.Description,
+		)
+
 	if err == sql.ErrNoRows {
 		return nil, errors.New("product not found")
 	}

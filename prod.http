@@ -47,7 +47,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Nasi Goreng",
+  "name": "Nasi Padang",
   "price": 20000,
   "stock": 50,
   "category_id": 1
@@ -71,4 +71,30 @@ Accept: application/json
 
 ### Hapus produk berdasarkan ID
 DELETE https://app-kasir-production-8bdf.up.railway.app/products/2
+Accept: application/json
+
+### ===============================
+### CHECKOUT / TRANSACTION
+### ===============================
+POST https://app-kasir-production-8bdf.up.railway.app/api/checkout
+Content-Type: application/json
+
+{
+  "items": [
+    { "product_id": 1, "quantity": 2 },
+    { "product_id": 3, "quantity": 1 }
+  ]
+}
+
+### SALES SUMMARY HARI INI
+GET https://app-kasir-production-8bdf.up.railway.app/api/report/hari-ini
+Accept: application/json
+
+### REPORT HARI INI
+GET https://app-kasir-production-8bdf.up.railway.app/api/report
+Accept: application/json
+
+
+### REPORT RANGE TANGGAL
+GET https://app-kasir-production-8bdf.up.railway.app/api/report?start_date=2026-01-01&end_date=2026-02-08
 Accept: application/json

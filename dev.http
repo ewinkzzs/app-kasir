@@ -47,10 +47,10 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Nasi Padang",
-  "price": 20000,
+  "name": "Jus Alpukat",
+  "price": 15000,
   "stock": 50,
-  "category_id": 1
+  "category_id": 2
 }
 
 ### Ambil detail produk berdasarkan ID
@@ -63,8 +63,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Nasi Goreng Spesial",
-  "price": 25000,
+  "name": "Bubur Ayam Spesial",
+  "price": 20000,
   "stock": 40,
   "category_id": 1
 }
