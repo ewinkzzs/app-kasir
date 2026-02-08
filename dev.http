@@ -47,7 +47,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Nasi Goreng",
+  "name": "Nasi Padang",
   "price": 20000,
   "stock": 50,
   "category_id": 1
@@ -70,5 +70,32 @@ Accept: application/json
 }
 
 ### Hapus produk berdasarkan ID
-DELETE http://localhost:8080/products/2
+DELETE http://localhost:8080/products/3
+Accept: application/json
+
+
+### ===============================
+### CHECKOUT / TRANSACTION
+### ===============================
+POST http://localhost:8080/api/checkout
+Content-Type: application/json
+
+{
+  "items": [
+    { "product_id": 1, "quantity": 2 },
+    { "product_id": 4, "quantity": 1 }
+  ]
+}
+
+### SALES SUMMARY HARI INI
+GET http://localhost:8080/api/report/hari-ini
+Accept: application/json
+
+### REPORT HARI INI
+GET http://localhost:8080/api/report
+Accept: application/json
+
+
+### REPORT RANGE TANGGAL
+GET http://localhost:8080/api/report?start_date=2026-01-01&end_date=2026-02-08
 Accept: application/json
