@@ -14,26 +14,47 @@ func NewProductRepository(db *sql.DB) *ProductRepository {
 	return &ProductRepository{db: db}
 }
 
-func (repo *ProductRepository) GetAll() ([]models.Product, error) {
+func (repo *ProductRepository) GetAll(nameFilter string) ([]models.Product, error) {
 	query := `
-        SELECT p.id, p.name, p.price, p.stock, p.category_id, c.name as category
-        FROM products p
-        JOIN categories c ON p.category_id = c.id
-    `
-	rows, err := repo.db.Query(query)
+		SELECT p.id, p.name, p.price, p.stock, c.id, c.name
+		FROM products p
+		JOIN categories c ON c.id = p.category_id
+	`
+
+	args := []interface{}{}
+
+	if nameFilter != "" {
+		query += " WHERE p.name ILIKE $1"
+		args = append(args, "%"+nameFilter+"%")
+	}
+
+	rows, err := repo.db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var products []models.Product
+	products := []models.Product{}
+
 	for rows.Next() {
 		var p models.Product
-		if err := rows.Scan(&p.ID, &p.Name, &p.Price, &p.Stock, &p.CategoryID, &p.Category); err != nil {
+		p.Category = models.Category{}
+
+		err := rows.Scan(
+			&p.ID,
+			&p.Name,
+			&p.Price,
+			&p.Stock,
+			&p.Category.ID,
+			&p.Category.Name,
+		)
+		if err != nil {
 			return nil, err
 		}
+
 		products = append(products, p)
 	}
+
 	return products, nil
 }
 
@@ -45,7 +66,7 @@ func (repo *ProductRepository) GetByID(id int) (*models.Product, error) {
         WHERE p.id = $1
     `
 	var p models.Product
-	err := repo.db.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.Price, &p.Stock, &p.CategoryID, &p.Category)
+	err := repo.db.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.Price, &p.Stock, &p.Category.ID, &p.Category.Name)
 	if err == sql.ErrNoRows {
 		return nil, errors.New("product not found")
 	}

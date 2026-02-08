@@ -8,6 +8,9 @@ Aplikasi **Kasir (Point of Sale)** berbasis **Go (Golang)** dengan arsitektur **
 
 * 📦 Manajemen Produk (CRUD)
 * 🗂️ Manajemen Kategori (CRUD)
+* 🔍 Pencarian Produk berdasarkan Nama (`search by name`)
+* 🧾 Transaksi / Checkout (multiple item)
+* 📊 Sales Summary (hari ini & range tanggal)
 * 🧱 Struktur Clean Architecture (Handler → Service → Repository)
 * 🐘 PostgreSQL (Supabase)
 * ☁️ Siap deploy ke Railway
@@ -30,25 +33,33 @@ Aplikasi **Kasir (Point of Sale)** berbasis **Go (Golang)** dengan arsitektur **
 ```
 app-kasir
 ├── config
-│   ├── config.go        # Load environment config
-│   └── database.go      # Database connection
-├── handlers             # HTTP handlers
+│   ├── config.go                # Load environment config
+│   └── database.go              # Database connection
+├── handlers                     # HTTP handlers
 │   ├── category_handler.go
-│   └── product_handler.go
-├── models               # Entity / Model
+│   ├── product_handler.go
+│   ├── transaction_handler.go   # Checkout / transaksi
+│   └── report_handler.go        # Sales report
+├── models                       # Entity / Model
 │   ├── category.go
-│   └── product.go
-├── repositories         # Database access layer
+│   ├── product.go
+│   ├── transaction.go
+│   └── report.go
+├── repositories                 # Database access layer
 │   ├── category_repository.go
-│   └── product_repository.go
-├── services             # Business logic layer
+│   ├── product_repository.go
+│   ├── transaction_repository.go
+│   └── report_repository.go
+├── services                     # Business logic layer
 │   ├── category_service.go
-│   └── product_service.go
-├── main.go              # App entry point
+│   ├── product_service.go
+│   ├── transaction_service.go
+│   └── report_service.go
+├── main.go                      # App entry point
 ├── go.mod
 ├── go.sum
-├── dev.http              # HTTP request (dev)
-├── prod.http             # HTTP request (prod)
+├── dev.http                     # HTTP request (dev)
+├── prod.http                    # HTTP request (prod)
 └── README.md
 ```
 
@@ -142,9 +153,41 @@ DELETE /categories/{id}
 
 ```
 GET    /products
+GET    /products?name=indom   # search by name
 POST   /products
 PUT    /products/{id}
 DELETE /products/{id}
+```
+
+### Transaksi / Checkout
+
+```
+POST /api/checkout
+```
+
+Request body:
+
+```json
+{
+  "items": [
+    { "product_id": 1, "quantity": 2 },
+    { "product_id": 3, "quantity": 1 }
+  ]
+}
+```
+
+### Sales Report
+
+**Hari ini**
+
+```
+GET /api/report
+```
+
+**Range tanggal (Optional Challenge)**
+
+```
+GET /api/report?start_date=2026-01-01&end_date=2026-02-01
 ```
 
 ---
